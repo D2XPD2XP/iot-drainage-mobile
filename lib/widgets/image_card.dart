@@ -19,17 +19,8 @@ class ImageCard extends StatelessWidget {
             duration: const Duration(milliseconds: 600),
             switchInCurve: Curves.easeOut,
             switchOutCurve: Curves.easeIn,
-            layoutBuilder: (currentChild, previousChildren) => Stack(
-              fit: StackFit.expand,
-              children: [
-                ...previousChildren,
-                ?currentChild,
-              ],
-            ),
-            transitionBuilder: (child, animation) => FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
+            layoutBuilder: (currentChild, previousChildren) => Stack(fit: StackFit.expand, children: [...previousChildren, ?currentChild]),
+            transitionBuilder: (child, animation) => FadeTransition(opacity: animation, child: child),
             child: _buildImage(),
           ),
           Positioned(
@@ -42,11 +33,7 @@ class ImageCard extends StatelessWidget {
                 child: Text(
                   timestamp ?? '',
                   key: ValueKey(timestamp),
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: GoogleFonts.inter(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
                 ),
               ),
             ),
@@ -61,13 +48,8 @@ class ImageCard extends StatelessWidget {
                 child: Container(
                   width: 64,
                   height: 64,
-                  decoration: const BoxDecoration(
-                    color: Colors.white60,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Image.asset("assets/images/symbol_expand.png"),
-                  ),
+                  decoration: const BoxDecoration(color: Colors.white60, shape: BoxShape.circle),
+                  child: Center(child: Image.asset("assets/images/symbol_expand.png")),
                 ),
               ),
             ),
@@ -87,10 +69,7 @@ class ImageCard extends StatelessWidget {
         transitionDuration: const Duration(milliseconds: 300),
         pageBuilder: (_, animation, _) => FadeTransition(
           opacity: animation,
-          child: _FullscreenImageViewer(
-            imageUrl: imageUrl!,
-            timestamp: timestamp,
-          ),
+          child: _FullscreenImageViewer(imageUrl: imageUrl!, timestamp: timestamp),
         ),
       ),
     );
@@ -98,10 +77,7 @@ class ImageCard extends StatelessWidget {
 
   Widget _buildImage() {
     if (imageUrl == null || imageUrl!.isEmpty) {
-      return Container(
-        key: const ValueKey('placeholder'),
-        color: Colors.grey.shade300,
-      );
+      return Container(key: const ValueKey('placeholder'), color: Colors.grey.shade300);
     }
     return Image.network(
       imageUrl!,
@@ -109,26 +85,15 @@ class ImageCard extends StatelessWidget {
       fit: BoxFit.cover,
       frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
         if (wasSynchronouslyLoaded || frame != null) {
-          return AnimatedOpacity(
-            opacity: 1.0,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeOut,
-            child: child,
-          );
+          return AnimatedOpacity(opacity: 1.0, duration: const Duration(milliseconds: 400), curve: Curves.easeOut, child: child);
         }
-        return AnimatedOpacity(
-          opacity: frame == null ? 0.0 : 1.0,
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeOut,
-          child: child,
-        );
+        return AnimatedOpacity(opacity: frame == null ? 0.0 : 1.0, duration: const Duration(milliseconds: 400), curve: Curves.easeOut, child: child);
       },
       loadingBuilder: (_, child, progress) {
         if (progress == null) return child;
         return Container(color: Colors.grey.shade300);
       },
-      errorBuilder: (_, _, _) =>
-          Container(color: Colors.grey.shade400),
+      errorBuilder: (_, _, _) => Container(color: Colors.grey.shade400),
     );
   }
 }
@@ -143,8 +108,7 @@ class _FullscreenImageViewer extends StatefulWidget {
   State<_FullscreenImageViewer> createState() => _FullscreenImageViewerState();
 }
 
-class _FullscreenImageViewerState extends State<_FullscreenImageViewer>
-    with SingleTickerProviderStateMixin {
+class _FullscreenImageViewerState extends State<_FullscreenImageViewer> with SingleTickerProviderStateMixin {
   final TransformationController _controller = TransformationController();
   TapDownDetails? _doubleTapDetails;
 
@@ -165,6 +129,7 @@ class _FullscreenImageViewerState extends State<_FullscreenImageViewer>
         ..translateByDouble(-position.dx * 1.5, -position.dy * 1.5, 0, 1)
         ..scaleByDouble(2.5, 2.5, 2.5, 1);
     }
+    setState(() {}); // Trigger rebuild to update the UI based on the new transformation.
   }
 
   @override
@@ -186,17 +151,9 @@ class _FullscreenImageViewerState extends State<_FullscreenImageViewer>
                   fit: BoxFit.contain,
                   loadingBuilder: (_, child, progress) {
                     if (progress == null) return child;
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
+                    return const Center(child: CircularProgressIndicator(color: Colors.white));
                   },
-                  errorBuilder: (_, _, _) => const Center(
-                    child: Icon(
-                      Icons.broken_image_outlined,
-                      color: Colors.white54,
-                      size: 64,
-                    ),
-                  ),
+                  errorBuilder: (_, _, _) => const Center(child: Icon(Icons.broken_image_outlined, color: Colors.white54, size: 64)),
                 ),
               ),
             ),
@@ -209,11 +166,7 @@ class _FullscreenImageViewerState extends State<_FullscreenImageViewer>
               child: Center(
                 child: Text(
                   widget.timestamp!,
-                  style: GoogleFonts.inter(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: GoogleFonts.inter(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
                 ),
               ),
             ),
@@ -223,9 +176,15 @@ class _FullscreenImageViewerState extends State<_FullscreenImageViewer>
             child: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(Icons.close, color: Colors.white, size: 28),
-              style: IconButton.styleFrom(
-                backgroundColor: Colors.white24,
-              ),
+              style: IconButton.styleFrom(backgroundColor: Colors.white24),
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 40,
+            left: MediaQuery.of(context).size.width / 2 - 85,
+            child: Text(
+              'Tip: Pinch to zoom, double tap to ${_controller.value != Matrix4.identity() ? 'reset' : 'zoom in'}',
+              style: GoogleFonts.inter(color: Colors.white70, fontSize: 8, fontStyle: FontStyle.italic),
             ),
           ),
         ],

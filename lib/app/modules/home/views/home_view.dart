@@ -15,10 +15,8 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Obx(() {
-        final isNormal = controller.sensorStatus.value == 'NORMAL' ||
-            controller.sensorStatus.value == null;
-        final targetColor =
-            isNormal ? const Color(0xFF47B881) : const Color(0xFFF64C4C);
+        final isNormal = controller.sensorStatus.value == 'NORMAL' || controller.sensorStatus.value == null;
+        final targetColor = isNormal ? const Color(0xFF47B881) : const Color(0xFFF64C4C);
 
         return TweenAnimationBuilder<Color?>(
           tween: ColorTween(end: targetColor),
@@ -28,18 +26,14 @@ class HomeView extends GetView<HomeController> {
             slivers: [
               SliverToBoxAdapter(
                 child: Padding(
-                  padding:
-                      const EdgeInsets.only(top: 67, left: 19, right: 19),
+                  padding: const EdgeInsets.only(top: 67, left: 19, right: 19),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
                           Expanded(
-                            child: Obx(() => StatusCard(
-                                  status: controller.sensorStatus.value,
-                                  timestamp: controller.sensorTimestamp.value,
-                                )),
+                            child: Obx(() => StatusCard(status: controller.sensorStatus.value, timestamp: controller.sensorTimestamp.value)),
                           ),
                         ],
                       ),
@@ -49,32 +43,19 @@ class HomeView extends GetView<HomeController> {
                         child: Row(
                           children: [
                             Expanded(
-                              child: Obx(() => HeightCard(
-                                    heightCm:
-                                        controller.waterLevelCm.value ?? 0,
-                                    status: controller.sensorStatus.value,
-                                  )),
+                              child: Obx(() => HeightCard(heightCm: controller.waterLevelCm.value ?? 0, status: controller.sensorStatus.value)),
                             ),
                             const SizedBox(width: 6),
-                            Expanded(
-                              child: Obx(() => WeatherCard(
-                                    rainDetected:
-                                        controller.rainDetected.value ?? false,
-                                  )),
-                            ),
+                            Expanded(child: Obx(() => WeatherCard(rainDetected: controller.rainDetected.value ?? false))),
                           ],
                         ),
                       ),
                       const SizedBox(height: 12),
                       SizedBox(
                         height: 348,
-                        child: Obx(
-                          () => ImageCard(
-                            imageUrl: controller.imageUrl.value,
-                            timestamp: controller.imageTimestamp.value,
-                          ),
-                        ),
+                        child: Obx(() => ImageCard(imageUrl: controller.imageUrl.value, timestamp: controller.imageTimestamp.value)),
                       ),
+                      SizedBox(height: 40),
                     ],
                   ),
                 ),
@@ -91,10 +72,7 @@ class HomeView extends GetView<HomeController> {
                     gradient: RadialGradient(
                       center: const Alignment(0, -1),
                       radius: 1.1,
-                      colors: [
-                        color ?? targetColor,
-                        const Color(0xFFFBFEFC),
-                      ],
+                      colors: [color ?? targetColor, const Color(0xFFFBFEFC)],
                       stops: const [0.1, 1.0],
                     ),
                   ),
@@ -107,25 +85,14 @@ class HomeView extends GetView<HomeController> {
                     duration: const Duration(milliseconds: 600),
                     switchInCurve: Curves.easeOut,
                     switchOutCurve: Curves.easeIn,
-                    layoutBuilder: (currentChild, previousChildren) => Stack(
-                      fit: StackFit.passthrough,
-                      children: [
-                        ...previousChildren,
-                        ?currentChild,
-                      ],
-                    ),
+                    layoutBuilder: (currentChild, previousChildren) =>
+                        Stack(fit: StackFit.passthrough, children: [...previousChildren, ?currentChild]),
                     transitionBuilder: (child, animation) => FadeTransition(
                       opacity: animation,
-                      child: ScaleTransition(
-                        scale: Tween<double>(begin: 1.04, end: 1.0)
-                            .animate(animation),
-                        child: child,
-                      ),
+                      child: ScaleTransition(scale: Tween<double>(begin: 1.04, end: 1.0).animate(animation), child: child),
                     ),
                     child: Image.asset(
-                      isNormal
-                          ? 'assets/images/health_green.png'
-                          : 'assets/images/health_red.png',
+                      isNormal ? 'assets/images/health_green.png' : 'assets/images/health_red.png',
                       key: ValueKey(isNormal),
                       fit: BoxFit.fitWidth,
                     ),
