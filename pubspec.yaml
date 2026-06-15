@@ -41,19 +41,19 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/pd_logo.png"
-  adaptive_icon_foreground: "assets/images/pd_foreground.png"
+  image_path: "assets/images/nadi_logo.png"
+  adaptive_icon_foreground: "assets/images/nadi_foreground.png"
   adaptive_icon_background: "assets/images/pd_background.png"
 
 flutter_native_splash:
   color: "#FFFFFF"
   color_dark: "#FFFFFF"
-  image: "assets/images/splash_logo_pd.png"
+  image: "assets/images/nadi_splash.png"
   android: true
   ios: true
 
   android_12:
-    image: "assets/images/splash_logo_pd.png"
+    image: "assets/images/nadi_splash.png"
     color: "#FFFFFF"
     color_dark: "#FFFFFF"
 
