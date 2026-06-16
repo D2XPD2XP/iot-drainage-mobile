@@ -44,15 +44,45 @@ class FcmService extends GetxService {
     await _initLocalNotifications();
     _listenForeground();
 
-    final token = await _messaging.getToken();
-    if (token != null) {
-      await _registerIfNeeded(token);
-    }
-
     // Token bisa berubah; daftarkan ulang otomatis saat itu terjadi.
     _messaging.onTokenRefresh.listen(_registerIfNeeded);
 
+    // Ambil & daftarkan token. init() ini sudah dipanggil non-blocking dari
+    // main(), jadi tidak ada lagi risiko menahan splash; pakai retry supaya
+    // device tetap teregistrasi walau pengambilan token pertama lambat/gagal
+    // (penting di APK release pada instalasi pertama).
+    await _fetchAndRegisterToken();
+
     return this;
+  }
+
+  /// Ambil FCM token lalu daftarkan ke backend. Jika gagal/null, coba ulang
+  /// beberapa kali dengan jeda — getToken() pada instalasi baru bisa butuh
+  /// waktu untuk registrasi awal ke server FCM.
+  Future<void> _fetchAndRegisterToken({int attempt = 0}) async {
+    String? token;
+    try {
+      token = await _messaging
+          .getToken()
+          .timeout(const Duration(seconds: 20), onTimeout: () => null);
+    } catch (e) {
+      debugPrint('FCM: getToken error: $e');
+    }
+
+    debugPrint('FCM token (attempt ${attempt + 1}): $token');
+
+    if (token != null) {
+      await _registerIfNeeded(token);
+      return;
+    }
+
+    // Belum dapat token; coba lagi (maksimal 5x, jeda 10 detik).
+    if (attempt < 4) {
+      await Future.delayed(const Duration(seconds: 10));
+      await _fetchAndRegisterToken(attempt: attempt + 1);
+    } else {
+      debugPrint('FCM: gagal mendapatkan token setelah beberapa percobaan');
+    }
   }
 
   Future<void> _requestPermission() async {
