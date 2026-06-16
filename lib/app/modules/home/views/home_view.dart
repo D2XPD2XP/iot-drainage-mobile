@@ -16,7 +16,7 @@ class HomeView extends GetView<HomeController> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Obx(() {
-        if (controller.sensorStatus.value == null) {
+        if (controller.isLoading.value) {
           return const Center(
             child: CircularProgressIndicator(color: Color(0xFF47B881)),
           );

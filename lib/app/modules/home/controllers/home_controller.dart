@@ -22,16 +22,29 @@ class HomeController extends GetxController {
   final rainDetected = RxnBool();
   final sensor = Rxn<SensorModel>();
 
+  final isLoading = true.obs;
+
   StreamSubscription? _wsSub;
 
   @override
   void onInit() {
     super.onInit();
-    fetchSensor();
-    fetchImage();
+    _loadInitialData();
     _wsSub = _wsService.stream.listen((_) {
       fetchSensor();
     });
+  }
+
+  /// Pemuatan data pertama saat layar dibuka. Menyalakan spinner hingga
+  /// selesai (sukses maupun gagal), lalu mematikannya.
+  Future<void> _loadInitialData() async {
+    isLoading.value = true;
+    try {
+      await fetchSensor();
+      await fetchImage();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override
