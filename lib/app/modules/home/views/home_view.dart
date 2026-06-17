@@ -22,6 +22,39 @@ class HomeView extends GetView<HomeController> {
           );
         }
 
+        if (controller.sensorStatus.value == null) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/nadi_logo.png',
+                  width: 120,
+                  height: 120,
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Perangkat IoT Offline',
+                  style: TextStyle(
+                    color: Color(0xFFFF9500),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Tidak ada data sensor yang diterima.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0xFFFF9500),
+                    fontSize: 13,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
         final isNormal = controller.sensorStatus.value == 'NORMAL' || controller.sensorStatus.value == 'WASPADA';
         final targetColor = isNormal ? const Color(0xFF47B881) : const Color(0xFFF64C4C);
 
